@@ -1,6 +1,6 @@
 import cookieParser from 'cookie-parser';
-import express from 'express';
-// import { StatusCodes } from 'http-status-codes';
+import express, { Request, Response, NextFunction } from 'express';
+import { StatusCodes } from 'http-status-codes';
 // import BaseRouter from './routes';
 
 const app = express();
@@ -19,9 +19,9 @@ export default app;
 
 /// Print API errors
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-// app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-//     console.log(err.message, err);
-//     return res.status(StatusCodes.BAD_REQUEST).json({
-//         error: err.message,
-//     });
-//  });
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+    console.log(err.message, err);
+    return res.status(StatusCodes.BAD_REQUEST).json({
+        error: err.message,
+    });
+ });
