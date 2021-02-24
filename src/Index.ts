@@ -1,5 +1,6 @@
-
 import app from './Server';
+import { intializeDB } from './db';
+intializeDB();
 
 // Start the server
 const port = Number(process.env.PORT || 3000);
