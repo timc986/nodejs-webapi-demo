@@ -1,7 +1,7 @@
 import cookieParser from 'cookie-parser';
 import express, { Request, Response, NextFunction } from 'express';
 import { StatusCodes } from 'http-status-codes';
-// import BaseRouter from './routes';
+import BaseRouter from './routes';
 import morgan from 'morgan';
 
 const app = express();
@@ -10,12 +10,10 @@ app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
 app.use(morgan('dev'));
 
-// Add APIs
-// app.use('/api', BaseRouter);
+app.use('/api', BaseRouter);
 
-app.get('/', (req, res) => res.send('Hello World!'));
+// app.get('/', (req, res) => res.send('Hello World!')); // test only, replace above app.use('/api', BaseRouter);
 
-// Export express instance
 export default app;
 
 
