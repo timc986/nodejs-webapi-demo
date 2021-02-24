@@ -2,11 +2,13 @@ import cookieParser from 'cookie-parser';
 import express, { Request, Response, NextFunction } from 'express';
 import { StatusCodes } from 'http-status-codes';
 // import BaseRouter from './routes';
+import morgan from 'morgan';
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
+app.use(morgan('dev'));
 
 // Add APIs
 // app.use('/api', BaseRouter);

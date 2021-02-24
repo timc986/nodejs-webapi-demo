@@ -1,8 +1,7 @@
-import { User } from './entities/User';
 import "reflect-metadata";
 import { createConnection } from "typeorm";
 // import { Tedis } from "tedis";
-// import logger from '../src/shared/Logger';
+import logger from '../src/shared/Logger';
 export async function intializeDB(): Promise<void> {
     await createConnection({
         "type": "postgres",
@@ -18,4 +17,5 @@ export async function intializeDB(): Promise<void> {
             __dirname + '/entities/*.ts'
         ]
     });
+    logger.info('Database successfully initialized');
 }
