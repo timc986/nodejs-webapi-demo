@@ -17,5 +17,5 @@ export async function intializeDB(): Promise<void> {
             __dirname + '/entities/*.ts'
         ]
     });
-    logger.info('Database successfully initialized');
+    logger.info('Database connected');
 }

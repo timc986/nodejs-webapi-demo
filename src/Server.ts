@@ -14,10 +14,10 @@ app.use(cookieParser());
 
 if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
-    logger.info('dev');
+    logger.info('environment: dev');
 } else if (process.env.NODE_ENV === 'production') {
     app.use(helmet());
-    logger.info('prod');
+    logger.info('environment: prod');
 }
 
 app.use('/api', BaseRouter);
