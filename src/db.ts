@@ -1,9 +1,9 @@
 import "reflect-metadata";
 import { ConnectionOptions, createConnection } from "typeorm";
 // import { Tedis } from "tedis";
-import logger from '../src/shared/Logger';
+import logger from './shared/Logger';
 
-export async function intializeDB(): Promise<void> {
+export async function dbInit(): Promise<void> {
     var connectionOptions: ConnectionOptions = {
         "type": "postgres",
         "host": process.env.TYPEORM_HOST,

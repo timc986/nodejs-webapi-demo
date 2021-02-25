@@ -1,9 +1,9 @@
 import './LoadEnv';
 import app from './Server';
-import { intializeDB } from './db';
+import { dbInit } from './Db';
 import logger from './shared/Logger';
 
-intializeDB();
+dbInit();
 
 const port = Number(process.env.PORT || 3000);
 app.listen(port, () => {

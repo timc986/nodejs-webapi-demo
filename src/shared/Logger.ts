@@ -1,9 +1,6 @@
 import { createLogger, format, transports } from 'winston';
 
-// Import Functions
 const { File, Console } = transports;
-
-// Init Logger
 const logger = createLogger({
     level: 'info',
 });
