@@ -1,21 +1,26 @@
 import "reflect-metadata";
-import { createConnection } from "typeorm";
+import { ConnectionOptions, createConnection } from "typeorm";
 // import { Tedis } from "tedis";
 import logger from '../src/shared/Logger';
+
 export async function intializeDB(): Promise<void> {
-    await createConnection({
+    var connectionOptions: ConnectionOptions = {
         "type": "postgres",
-        "host": "localhost",
+        "host": process.env.TYPEORM_HOST,
         "port": 5432,
-        "username": "postgres",
-        "password": "masterpw",
-        "database": "NodejsTest",
+        "username": process.env.TYPEORM_USERNAME,
+        "password": process.env.TYPEORM_PASSWORD,
+        "database": process.env.TYPEORM_DATABASE,
         "synchronize": true,
         "logging": false,
-        "migrationsTableName": "custom_migration_table",
+        "migrationsTableName": process.env.TYPEORM_MIGRATIONSTABLENAME,
         "entities": [
             __dirname + '/entities/*.ts'
         ]
-    });
+    };
+
+    console.log(connectionOptions);
+
+    await createConnection(connectionOptions);
     logger.info('Database connected');
 }
