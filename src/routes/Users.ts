@@ -16,7 +16,7 @@ router.get('/all', async (req: Request, res: Response) => {
         .getRepository(User)
         .createQueryBuilder("user")
         .getMany();
-    return res.status(StatusCodes.OK).json({users});
+    return res.status(StatusCodes.OK).json({ users });
 });
 
 // http://localhost:3000/api/users/1
@@ -34,18 +34,14 @@ router.get('/:id', async (req: Request, res: Response) => {
         res.end();
         return;
     }
-    return res.status(StatusCodes.OK).json({user});
+    return res.status(StatusCodes.OK).json({ user });
 });
 
 
-/******************************************************************************
- *                       Add One - "POST /api/users/add"
- ******************************************************************************/
+// http://localhost:3000/api/users/add
 
 router.post('/add', async (req: Request, res: Response) => {
-    const {
-        user
-    } = req.body;
+    const user = req.body;
 
     if (!user) {
         return res.status(StatusCodes.BAD_REQUEST).json({
@@ -68,12 +64,10 @@ router.post('/add', async (req: Request, res: Response) => {
 });
 
 
-/******************************************************************************
- *                       Update - "PUT /api/users/update"
- ******************************************************************************/
+// http://localhost:3000/api/users/update
 
 router.put('/update', async (req: Request, res: Response) => {
-    const { user } = req.body;
+    const user = req.body;
     if (!user && !user.id) {
         return res.status(StatusCodes.BAD_REQUEST).json({
             error: paramMissingError,
@@ -82,8 +76,8 @@ router.put('/update', async (req: Request, res: Response) => {
     await getConnection()
         .createQueryBuilder()
         .update(User)
-        .set({ 
-            firstName: user.firstName, 
+        .set({
+            firstName: user.firstName,
             lastName: user.lastName,
             age: user.age
         })
@@ -93,9 +87,7 @@ router.put('/update', async (req: Request, res: Response) => {
 });
 
 
-/******************************************************************************
- *                    Delete - "DELETE /api/users/delete/:id"
- ******************************************************************************/
+// http://localhost:3000/api/users/delete/2
 
 router.delete('/delete/:id', async (req: Request, res: Response) => {
     const { id } = req.params as ParamsDictionary;
