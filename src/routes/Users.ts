@@ -41,26 +41,32 @@ router.get('/:id', async (req: Request, res: Response) => {
 // http://localhost:3000/api/users/add
 
 router.post('/add', async (req: Request, res: Response) => {
-    const user = req.body;
+    try {
+        const user = req.body; // TODO: request validation
+        if (!user) {
+            return res.status(StatusCodes.BAD_REQUEST).json({
+                error: paramMissingError,
+            });
+        }
 
-    if (!user) {
+        await getConnection()
+            .createQueryBuilder()
+            .insert()
+            .into(User)
+            .values([
+                {
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    age: user.age
+                }
+            ])
+            .execute();
+        return res.status(StatusCodes.CREATED).end();
+    } catch (error) {
         return res.status(StatusCodes.BAD_REQUEST).json({
-            error: paramMissingError,
+            error: error.message,
         });
     }
-    await getConnection()
-        .createQueryBuilder()
-        .insert()
-        .into(User)
-        .values([
-            {
-                firstName: user.firstName,
-                lastName: user.lastName,
-                age: user.age
-            }
-        ])
-        .execute();
-    return res.status(StatusCodes.CREATED).end();
 });
 
 
