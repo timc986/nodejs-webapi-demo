@@ -12,11 +12,17 @@ const router = Router();
 // http://localhost:3000/api/users/all
 
 router.get('/all', async (req: Request, res: Response) => {
-    const users = await getConnection()
-        .getRepository(User)
-        .createQueryBuilder("user")
-        .getMany();
-    return res.status(StatusCodes.OK).json({ users });
+    try {
+        const users = await getConnection()
+            .getRepository(User)
+            .createQueryBuilder("user")
+            .getMany();
+        return res.status(StatusCodes.OK).json({ users });
+    } catch (error) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+            error: error.message,
+        });
+    }
 });
 
 // http://localhost:3000/api/users/1
