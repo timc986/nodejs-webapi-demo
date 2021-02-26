@@ -60,7 +60,7 @@ router.get('/:id', async (req: Request, res: Response) => {
 router.post('/add', async (req: Request, res: Response) => {
     try {
         const user = req.body; // TODO: request validation
-        if (!user) {
+        if (!user || !user.firstName || !user.lastName || !user.age) {
             return res.status(StatusCodes.BAD_REQUEST).json({
                 error: paramMissingError,
             });
@@ -92,7 +92,7 @@ router.post('/add', async (req: Request, res: Response) => {
 router.put('/update', async (req: Request, res: Response) => {
     try {
         const user = req.body;
-        if (!user && !user.id) {
+        if (!user || !user.id) {
             return res.status(StatusCodes.BAD_REQUEST).json({
                 error: paramMissingError,
             });
