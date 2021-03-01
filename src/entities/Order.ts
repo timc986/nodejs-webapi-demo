@@ -8,8 +8,8 @@ export class Order {
     orderCode: string;
     @Column()
     name: string;
-    // @Column()
-    // createdOn: Date;    
+    @Column({ type: 'timestamp without time zone' })
+    createdOn: Date;    
 
     @ManyToOne(
         type => User,

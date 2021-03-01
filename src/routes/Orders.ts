@@ -78,7 +78,8 @@ router.post('/add', async (req: Request, res: Response) => {
                 {
                     orderCode: order.orderCode,
                     name: order.name,
-                    createdByUser: user
+                    createdByUser: user,
+                    createdOn: new Date().toUTCString()
                 }
             ])
             .execute();
