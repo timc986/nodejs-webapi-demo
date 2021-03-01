@@ -67,8 +67,8 @@ router.post('/add', async (req: Request, res: Response) => {
             });
         }
 
-        const user = new User();
-        user.id = 1;
+        const newUser = new User();
+        newUser.id = 1;
 
         await getConnection()
             .createQueryBuilder()
@@ -78,7 +78,7 @@ router.post('/add', async (req: Request, res: Response) => {
                 {
                     orderCode: order.orderCode,
                     name: order.name,
-                    createdByUser: user,
+                    createdByUser: newUser,
                     createdOn: new Date().toUTCString()
                 }
             ])

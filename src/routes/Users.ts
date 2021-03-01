@@ -1,3 +1,4 @@
+import { UserRole } from '../entities/UserRole';
 import { Request, Response, Router } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { ParamsDictionary } from 'express-serve-static-core';
@@ -16,6 +17,7 @@ router.get('/all', async (req: Request, res: Response) => {
         const users = await getConnection()
             .getRepository(User)
             .createQueryBuilder("user")
+            .innerJoinAndSelect("user.userRole", "userRole")
             .getMany();
         if (users.length < 1) {
             res.status(404);
@@ -39,6 +41,7 @@ router.get('/:id', async (req: Request, res: Response) => {
             .createQueryBuilder()
             .select("user")
             .from(User, "user")
+            .innerJoinAndSelect("user.userRole", "userRole")
             .where("user.id = :id", { id: id })
             .getOne();
         if (!user) {
@@ -60,11 +63,14 @@ router.get('/:id', async (req: Request, res: Response) => {
 router.post('/add', async (req: Request, res: Response) => {
     try {
         const user = req.body; // TODO: request validation
-        if (!user || !user.firstName || !user.lastName || !user.age) {
+        if (!user || !user.firstName || !user.lastName || !user.age || !user.userRoleId) {
             return res.status(StatusCodes.BAD_REQUEST).json({
                 error: paramMissingError,
             });
         }
+
+        const newUserRole = new UserRole();
+        newUserRole.id = user.userRoleId;
 
         await getConnection()
             .createQueryBuilder()
@@ -76,7 +82,8 @@ router.post('/add', async (req: Request, res: Response) => {
                     lastName: user.lastName,
                     age: user.age,
                     email: user.email,
-                    createdOn: new Date().toUTCString()
+                    createdOn: new Date().toUTCString(),
+                    userRole: newUserRole
                 }
             ])
             .execute();
