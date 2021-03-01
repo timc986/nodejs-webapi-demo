@@ -4,6 +4,7 @@ import { ParamsDictionary } from 'express-serve-static-core';
 import { getConnection } from "typeorm";
 import { Order } from "../entities/Order";
 import { paramMissingError } from '../shared/Constants';
+import { User } from 'src/entities/User';
 
 const router = Router();
 
@@ -14,6 +15,7 @@ router.get('/all', async (req: Request, res: Response) => {
         const orders = await getConnection()
             .getRepository(Order)
             .createQueryBuilder("order")
+            .innerJoinAndSelect("order.createdByUser", "createdByUser")
             .getMany();
         if (orders.length < 1) {
             res.status(404);
@@ -37,6 +39,7 @@ router.get('/:id', async (req: Request, res: Response) => {
             .createQueryBuilder()
             .select("order")
             .from(Order, "order")
+            .innerJoinAndSelect("order.createdByUser", "createdByUser")
             .where("order.id = :id", { id: id })
             .getOne();
         if (!order) {
@@ -64,6 +67,9 @@ router.post('/add', async (req: Request, res: Response) => {
             });
         }
 
+        const user = new User();
+        user.id = 1;
+
         await getConnection()
             .createQueryBuilder()
             .insert()
@@ -72,7 +78,7 @@ router.post('/add', async (req: Request, res: Response) => {
                 {
                     orderCode: order.orderCode,
                     name: order.name,
-                    createdByUser: order.name
+                    createdByUser: user
                 }
             ])
             .execute();
