@@ -12,8 +12,8 @@ export class User {
     age: number;
     @Column()
     email: string;
-    // @Column()
-    // createdOn: Date;
+    @Column({ type: 'timestamp without time zone' })
+    createdOn: Date;
     // @Column()
     // lastLoginOn: Date;
     // @Column()

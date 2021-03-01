@@ -75,7 +75,8 @@ router.post('/add', async (req: Request, res: Response) => {
                     firstName: user.firstName,
                     lastName: user.lastName,
                     age: user.age,
-                    email: user.email
+                    email: user.email,
+                    createdOn: new Date().toUTCString()
                 }
             ])
             .execute();
