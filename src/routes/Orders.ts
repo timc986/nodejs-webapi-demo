@@ -71,7 +71,8 @@ router.post('/add', async (req: Request, res: Response) => {
             .values([
                 {
                     orderCode: order.orderCode,
-                    name: order.name
+                    name: order.name,
+                    createdByUser: order.name
                 }
             ])
             .execute();

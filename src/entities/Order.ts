@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import { User } from "./User";
 @Entity()
 export class Order {
     @PrimaryGeneratedColumn()
@@ -8,5 +9,11 @@ export class Order {
     @Column()
     name: string;
     // @Column()
-    // createdOn: Date;
+    // createdOn: Date;    
+
+    @ManyToOne(
+        type => User,
+        createdByUser => createdByUser.orders
+    )
+    createdByUser: User;
 }
