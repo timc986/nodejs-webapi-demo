@@ -9,4 +9,12 @@ export class User {
     lastName: string;
     @Column()
     age: number;
+    @Column()
+    email: string;
+    // @Column()
+    // createdOn: Date;
+    // @Column()
+    // lastLoginOn: Date;
+    // @Column()
+    // lastUpdateOn: Date;
 }

@@ -74,7 +74,8 @@ router.post('/add', async (req: Request, res: Response) => {
                 {
                     firstName: user.firstName,
                     lastName: user.lastName,
-                    age: user.age
+                    age: user.age,
+                    email: user.email
                 }
             ])
             .execute();
@@ -103,7 +104,8 @@ router.put('/update', async (req: Request, res: Response) => {
             .set({
                 firstName: user.firstName,
                 lastName: user.lastName,
-                age: user.age
+                age: user.age,
+                email: user.email
             })
             .where("id = :id", { id: user.id }) // TODO: what if id doesn't exist, should throw error i think?
             .execute();
