@@ -1,5 +1,5 @@
 import './LoadEnv';
-import app from './Server';
+import app from './App';
 import { dbInit } from './Db';
 import logger from './shared/Logger';
 
