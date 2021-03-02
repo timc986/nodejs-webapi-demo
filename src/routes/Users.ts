@@ -60,11 +60,11 @@ router.get('/:id', async (req: Request, res: Response) => {
 // http://localhost:3000/api/users/add
 
 router.post('/add',
-    body('firstName', 'firstName doesnt exists').trim().not().isEmpty(),
-    body('lastName', 'lastName doesnt exists').trim().not().isEmpty(),
+    body('firstName', 'firstName is required').trim().not().isEmpty(),
+    body('lastName', 'lastName is required').trim().not().isEmpty(),
     body('age', 'Invalid age').trim().isInt({ min: 1 }),
     body('email', 'Invalid email').isEmail(),
-    body('userRoleId', 'Invalid userRoleId').trim().isInt({ min: 1 }),
+    body('userRoleId', 'Invalid userRoleId').optional().trim().isInt({ min: 1 }),
     async (req: Request, res: Response) => {
         try {
             const errors = validationResult(req);
@@ -78,6 +78,9 @@ router.post('/add',
             //         error: paramMissingError,
             //     });
             // }
+            if(!user.userRoleId){
+                user.userRoleId = 1; // set default value
+            }
 
             const newUserRole = new UserRole();
             newUserRole.id = user.userRoleId;
