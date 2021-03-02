@@ -5,6 +5,7 @@ import { ParamsDictionary } from 'express-serve-static-core';
 import { getConnection } from "typeorm";
 import { User } from "../entities/User";
 import { paramMissingError } from '../shared/Constants';
+import { body, validationResult } from 'express-validator';
 
 const router = Router();
 
@@ -60,8 +61,13 @@ router.get('/:id', async (req: Request, res: Response) => {
 
 // http://localhost:3000/api/users/add
 
-router.post('/add', async (req: Request, res: Response) => {
+router.post('/add', body('email').isEmail(), async (req: Request, res: Response) => {
     try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(StatusCodes.BAD_REQUEST).json({ errors: errors.array() });
+        }
+
         const user = req.body; // TODO: request validation
         if (!user || !user.firstName || !user.lastName || !user.age || !user.userRoleId) {
             return res.status(StatusCodes.BAD_REQUEST).json({
