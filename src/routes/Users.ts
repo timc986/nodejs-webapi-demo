@@ -9,8 +9,6 @@ import { body, validationResult } from 'express-validator';
 
 const router = Router();
 
-// User data access service
-
 // http://localhost:3000/api/users/all
 
 router.get('/all', async (req: Request, res: Response) => {
@@ -61,45 +59,51 @@ router.get('/:id', async (req: Request, res: Response) => {
 
 // http://localhost:3000/api/users/add
 
-router.post('/add', body('email').isEmail(), async (req: Request, res: Response) => {
-    try {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(StatusCodes.BAD_REQUEST).json({ errors: errors.array() });
-        }
+router.post('/add',
+    body('firstName', 'firstName doesnt exists').trim().not().isEmpty(),
+    body('lastName', 'lastName doesnt exists').trim().not().isEmpty(),
+    body('age', 'Invalid age').trim().isInt({ min: 1 }),
+    body('email', 'Invalid email').isEmail(),
+    body('userRoleId', 'Invalid userRoleId').trim().isInt({ min: 1 }),
+    async (req: Request, res: Response) => {
+        try {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return res.status(StatusCodes.BAD_REQUEST).json({ errors: errors.array() });
+            }
 
-        const user = req.body; // TODO: request validation
-        if (!user || !user.firstName || !user.lastName || !user.age || !user.userRoleId) {
+            const user = req.body;
+            // if (!user || !user.firstName || !user.lastName || !user.age || !user.userRoleId) {
+            //     return res.status(StatusCodes.BAD_REQUEST).json({
+            //         error: paramMissingError,
+            //     });
+            // }
+
+            const newUserRole = new UserRole();
+            newUserRole.id = user.userRoleId;
+
+            await getConnection()
+                .createQueryBuilder()
+                .insert()
+                .into(User)
+                .values([
+                    {
+                        firstName: user.firstName,
+                        lastName: user.lastName,
+                        age: user.age,
+                        email: user.email,
+                        createdOn: new Date().toUTCString(),
+                        userRole: newUserRole
+                    }
+                ])
+                .execute();
+            return res.status(StatusCodes.CREATED).end();
+        } catch (error) {
             return res.status(StatusCodes.BAD_REQUEST).json({
-                error: paramMissingError,
+                error: error.message,
             });
         }
-
-        const newUserRole = new UserRole();
-        newUserRole.id = user.userRoleId;
-
-        await getConnection()
-            .createQueryBuilder()
-            .insert()
-            .into(User)
-            .values([
-                {
-                    firstName: user.firstName,
-                    lastName: user.lastName,
-                    age: user.age,
-                    email: user.email,
-                    createdOn: new Date().toUTCString(),
-                    userRole: newUserRole
-                }
-            ])
-            .execute();
-        return res.status(StatusCodes.CREATED).end();
-    } catch (error) {
-        return res.status(StatusCodes.BAD_REQUEST).json({
-            error: error.message,
-        });
-    }
-});
+    });
 
 
 // http://localhost:3000/api/users/update
