@@ -16,6 +16,9 @@ export async function dbInit(): Promise<void> {
         "migrationsTableName": process.env.TYPEORM_MIGRATIONSTABLENAME,
         "entities": [
             __dirname + '/entities/*.ts'
+        ],
+        "migrations": [
+            __dirname + '/migrations/*.ts'
         ]
     };
 
