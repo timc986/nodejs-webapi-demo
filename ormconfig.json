@@ -14,12 +14,12 @@
     "cli": {
         "entitiesDir": "src/entities",
         "migrationsDir": "src/migrations",
-        "subscribersDir": "src/subscriber"
+        "subscribersDir": "src/subscribers"
     },
     "migrations": [
         "src/migrations/**/*.ts"
     ],
     "subscribers": [
-        "src/subscriber/**/*.ts"
+        "src/subscribers/**/*.ts"
     ]
 }
