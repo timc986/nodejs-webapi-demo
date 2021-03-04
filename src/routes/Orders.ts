@@ -4,7 +4,7 @@ import { ParamsDictionary } from 'express-serve-static-core';
 import { getConnection } from "typeorm";
 import { Order } from "../entities/Order";
 import { paramMissingError } from '../shared/Constants';
-import { User } from 'src/entities/User';
+import { User } from '../entities/User';
 
 const router = Router();
 

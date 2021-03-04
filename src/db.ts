@@ -15,10 +15,10 @@ export async function dbInit(): Promise<void> {
         "logging": (process.env.TYPEORM_LOGGING === 'true'),
         "migrationsTableName": process.env.TYPEORM_MIGRATIONSTABLENAME,
         "entities": [
-            __dirname + '/entities/*.ts'
+            __dirname + '/entities/*{.ts,.js}'
         ],
         "migrations": [
-            __dirname + '/migrations/*.ts'
+            __dirname + '/migrations/*{.ts,.js}'
         ]
     };
 
