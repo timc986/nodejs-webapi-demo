@@ -3,7 +3,7 @@ import { ConnectionOptions } from 'typeorm';
 
 if (!process.env.TYPEORM_DATABASE) {
     const result2 = dotenv.config({
-        path: `./env/development.env`, // default to use development
+        path: `./env/development.env`, // default to use development for cli
     });
 
     if (result2.error) {
@@ -37,7 +37,6 @@ const connectionOptions: ConnectionOptions = {
     }
 };
 
-console.log('__dirname :', __dirname);
 console.log('connectionOptions :', connectionOptions);
 
 export = connectionOptions;
