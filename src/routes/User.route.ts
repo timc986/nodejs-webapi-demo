@@ -1,3 +1,4 @@
+import { UserController } from '../controllers/User.controller';
 import { UserRole } from '../entities/UserRole';
 import { Request, Response, Router } from 'express';
 import { StatusCodes } from 'http-status-codes';
@@ -9,15 +10,18 @@ import { body, validationResult } from 'express-validator';
 
 const router = Router();
 
+const userController: UserController = new UserController();
+
 // http://localhost:3000/api/users/all
 
 router.get('/all', async (req: Request, res: Response) => {
     try {
-        const users = await getConnection()
-            .getRepository(User)
-            .createQueryBuilder("user")
-            .innerJoinAndSelect("user.userRole", "userRole")
-            .getMany();
+        const users = await userController.getAllUsers();
+        // const users = await getConnection()
+        //     .getRepository(User)
+        //     .createQueryBuilder("user")
+        //     .innerJoinAndSelect("user.userRole", "userRole")
+        //     .getMany();
         if (users.length < 1) {
             res.status(404);
             res.end();
@@ -35,14 +39,15 @@ router.get('/all', async (req: Request, res: Response) => {
 
 router.get('/:id', async (req: Request, res: Response) => {
     try {
-        const { id } = req.params as ParamsDictionary;
-        const user = await getConnection()
-            .createQueryBuilder()
-            .select("user")
-            .from(User, "user")
-            .innerJoinAndSelect("user.userRole", "userRole")
-            .where("user.id = :id", { id: id })
-            .getOne();
+        const user = await userController.getUser(req, res);
+        // const { id } = req.params as ParamsDictionary;
+        // const user = await getConnection()
+        //     .createQueryBuilder()
+        //     .select("user")
+        //     .from(User, "user")
+        //     .innerJoinAndSelect("user.userRole", "userRole")
+        //     .where("user.id = :id", { id: id })
+        //     .getOne();
         if (!user) {
             res.status(404);
             res.end();
@@ -78,7 +83,7 @@ router.post('/add',
             //         error: paramMissingError,
             //     });
             // }
-            if(!user.userRoleId){
+            if (!user.userRoleId) {
                 user.userRoleId = 1; // set default value
             }
 

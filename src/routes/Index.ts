@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import UserRouter from './Users';
-import OrderRouter from './Orders';
+import UserRouter from './User.route';
+import OrderRouter from './Order.route';
 
 const router = Router();
 
