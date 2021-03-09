@@ -1,3 +1,4 @@
+import { UserRole } from "../entities/UserRole";
 import { getConnection } from "typeorm";
 import { User } from "../entities/User";
 
@@ -25,5 +26,26 @@ export class UserService {
             .getOne();
 
         return user;
+    }
+
+    public async addUser(user: User, userRoleId: number): Promise<void> {
+        const newUserRole = new UserRole();
+        newUserRole.id = userRoleId;
+
+        await getConnection()
+            .createQueryBuilder()
+            .insert()
+            .into(User)
+            .values([
+                {
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    age: user.age,
+                    email: user.email,
+                    createdOn: new Date().toUTCString(),
+                    userRole: newUserRole
+                }
+            ])
+            .execute();
     }
 }

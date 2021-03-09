@@ -1,5 +1,4 @@
 import { UserController } from '../controllers/User.controller';
-import { UserRole } from '../entities/UserRole';
 import { Request, Response, Router } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { ParamsDictionary } from 'express-serve-static-core';
@@ -77,34 +76,31 @@ router.post('/add',
                 return res.status(StatusCodes.BAD_REQUEST).json({ errors: errors.array() });
             }
 
-            const user = req.body;
-            // if (!user || !user.firstName || !user.lastName || !user.age || !user.userRoleId) {
-            //     return res.status(StatusCodes.BAD_REQUEST).json({
-            //         error: paramMissingError,
-            //     });
+            await userController.addUser(req, res);
+
+            // const user = req.body;
+            // if (!user.userRoleId) {
+            //     user.userRoleId = 1;
             // }
-            if (!user.userRoleId) {
-                user.userRoleId = 1; // set default value
-            }
 
-            const newUserRole = new UserRole();
-            newUserRole.id = user.userRoleId;
+            // const newUserRole = new UserRole();
+            // newUserRole.id = user.userRoleId;
 
-            await getConnection()
-                .createQueryBuilder()
-                .insert()
-                .into(User)
-                .values([
-                    {
-                        firstName: user.firstName,
-                        lastName: user.lastName,
-                        age: user.age,
-                        email: user.email,
-                        createdOn: new Date().toUTCString(),
-                        userRole: newUserRole
-                    }
-                ])
-                .execute();
+            // await getConnection()
+            //     .createQueryBuilder()
+            //     .insert()
+            //     .into(User)
+            //     .values([
+            //         {
+            //             firstName: user.firstName,
+            //             lastName: user.lastName,
+            //             age: user.age,
+            //             email: user.email,
+            //             createdOn: new Date().toUTCString(),
+            //             userRole: newUserRole
+            //         }
+            //     ])
+            //     .execute();
             return res.status(StatusCodes.CREATED).end();
         } catch (error) {
             return res.status(StatusCodes.BAD_REQUEST).json({

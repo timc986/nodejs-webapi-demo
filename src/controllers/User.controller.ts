@@ -18,4 +18,13 @@ export class UserController {
         const user = await this.userService.getUser(id);
         return user;
     }
+
+    public async addUser(req: Request, res: Response): Promise<void> {
+        const user = req.body;
+        let userRoleId = 1; // set default value
+        if (user.userRoleId) {
+            userRoleId = user.userRoleId;
+        }
+        await this.userService.addUser(user, userRoleId);
+    }
 }
