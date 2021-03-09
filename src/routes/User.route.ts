@@ -5,7 +5,7 @@ import { ParamsDictionary } from 'express-serve-static-core';
 import { getConnection } from "typeorm";
 import { User } from "../entities/User";
 import { paramMissingError } from '../shared/Constants';
-import { body, validationResult } from 'express-validator';
+import { validationResult } from 'express-validator';
 
 const router = Router();
 
@@ -16,11 +16,6 @@ const userController: UserController = new UserController();
 router.get('/all', async (req: Request, res: Response) => {
     try {
         const users = await userController.getAllUsers();
-        // const users = await getConnection()
-        //     .getRepository(User)
-        //     .createQueryBuilder("user")
-        //     .innerJoinAndSelect("user.userRole", "userRole")
-        //     .getMany();
         if (users.length < 1) {
             res.status(404);
             res.end();
@@ -39,14 +34,6 @@ router.get('/all', async (req: Request, res: Response) => {
 router.get('/:id', async (req: Request, res: Response) => {
     try {
         const user = await userController.getUser(req, res);
-        // const { id } = req.params as ParamsDictionary;
-        // const user = await getConnection()
-        //     .createQueryBuilder()
-        //     .select("user")
-        //     .from(User, "user")
-        //     .innerJoinAndSelect("user.userRole", "userRole")
-        //     .where("user.id = :id", { id: id })
-        //     .getOne();
         if (!user) {
             res.status(404);
             res.end();
@@ -64,11 +51,7 @@ router.get('/:id', async (req: Request, res: Response) => {
 // http://localhost:3000/api/users/add
 
 router.post('/add',
-    body('firstName', 'firstName is required').trim().not().isEmpty(),
-    body('lastName', 'lastName is required').trim().not().isEmpty(),
-    body('age', 'Invalid age').trim().isInt({ min: 1 }),
-    body('email', 'Invalid email').isEmail(),
-    body('userRoleId', 'Invalid userRoleId').optional().trim().isInt({ min: 1 }),
+    userController.validate('addUser'),
     async (req: Request, res: Response) => {
         try {
             const errors = validationResult(req);
@@ -77,30 +60,6 @@ router.post('/add',
             }
 
             await userController.addUser(req, res);
-
-            // const user = req.body;
-            // if (!user.userRoleId) {
-            //     user.userRoleId = 1;
-            // }
-
-            // const newUserRole = new UserRole();
-            // newUserRole.id = user.userRoleId;
-
-            // await getConnection()
-            //     .createQueryBuilder()
-            //     .insert()
-            //     .into(User)
-            //     .values([
-            //         {
-            //             firstName: user.firstName,
-            //             lastName: user.lastName,
-            //             age: user.age,
-            //             email: user.email,
-            //             createdOn: new Date().toUTCString(),
-            //             userRole: newUserRole
-            //         }
-            //     ])
-            //     .execute();
             return res.status(StatusCodes.CREATED).end();
         } catch (error) {
             return res.status(StatusCodes.BAD_REQUEST).json({
