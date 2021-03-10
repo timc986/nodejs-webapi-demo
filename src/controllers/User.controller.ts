@@ -35,6 +35,7 @@ export class UserController {
         if (!existingUser) {
             throw new Error('user not found');
         }
+        let existingUserRoleId = existingUser.userRole.id;
 
         if (user.firstName && (user.firstName !== existingUser.firstName)) {
             existingUser.firstName = user.firstName;
@@ -48,8 +49,11 @@ export class UserController {
         if (user.email && (user.email !== existingUser.email)) {
             existingUser.email = user.email;
         }
+        if (user.userRoleId && (user.userRoleId != existingUserRoleId)) {
+            existingUserRoleId = user.userRoleId;
+        }
 
-        await this.userService.updateUser(existingUser);
+        await this.userService.updateUser(existingUser, existingUserRoleId);
     }
 
     public validate(method: string): ValidationChain[] {
@@ -69,7 +73,8 @@ export class UserController {
                     body('firstName', 'firstName is required').optional().trim().not().isEmpty(),
                     body('lastName', 'lastName is required').optional().trim().not().isEmpty(),
                     body('age', 'a valid age is required').optional().trim().isInt({ min: 1 }),
-                    body('email', 'a valid email address is required').optional().isEmail()
+                    body('email', 'a valid email address is required').optional().isEmail(),
+                    body('userRoleId', 'Invalid userRoleId').optional().trim().isInt({ min: 1 })
                 ]
             }
             default: {

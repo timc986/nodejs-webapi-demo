@@ -49,7 +49,10 @@ export class UserService {
             .execute();
     }
 
-    public async updateUser(user: User): Promise<void> {
+    public async updateUser(user: User, userRoleId: number): Promise<void> {
+        const newUserRole = new UserRole();
+        newUserRole.id = userRoleId;
+
         await getConnection()
             .createQueryBuilder()
             .update(User)
@@ -57,7 +60,8 @@ export class UserService {
                 firstName: user.firstName,
                 lastName: user.lastName,
                 age: user.age,
-                email: user.email
+                email: user.email,
+                userRole: newUserRole
             })
             .where("id = :id", { id: user.id })
             .execute();
