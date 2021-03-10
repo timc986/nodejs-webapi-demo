@@ -32,11 +32,24 @@ export class UserController {
     public async updateUser(req: Request, res: Response): Promise<void> {
         const user = req.body;
         const existingUser = await this.userService.getUser(user.id);
-        if(!existingUser){
+        if (!existingUser) {
             throw new Error('user not found');
         }
 
-        await this.userService.updateUser(user); // TODO: only update the fields that exist in the request
+        if (user.firstName && (user.firstName !== existingUser.firstName)) {
+            existingUser.firstName = user.firstName;
+        }
+        if (user.lastName && (user.lastName !== existingUser.lastName)) {
+            existingUser.lastName = user.lastName;
+        }
+        if (user.age && (user.age != existingUser.age)) {
+            existingUser.age = user.age;
+        }
+        if (user.email && (user.email !== existingUser.email)) {
+            existingUser.email = user.email;
+        }
+
+        await this.userService.updateUser(existingUser);
     }
 
     public validate(method: string): ValidationChain[] {
