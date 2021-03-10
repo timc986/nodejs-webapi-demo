@@ -29,6 +29,16 @@ export class UserController {
         await this.userService.addUser(user, userRoleId);
     }
 
+    public async updateUser(req: Request, res: Response): Promise<void> {
+        const user = req.body;
+        const existingUser = await this.userService.getUser(user.id);
+        if(!existingUser){
+            throw new Error('user not found');
+        }
+
+        await this.userService.updateUser(user); // TODO: only update the fields that exist in the request
+    }
+
     public validate(method: string): ValidationChain[] {
         switch (method) {
             case 'addUser': {
@@ -38,6 +48,15 @@ export class UserController {
                     body('age', 'a valid age is required').trim().isInt({ min: 1 }),
                     body('email', 'a valid email address is required').isEmail(),
                     body('userRoleId', 'Invalid userRoleId').optional().trim().isInt({ min: 1 })
+                ]
+            }
+            case 'updateUser': {
+                return [
+                    body('id', 'user id is required').trim().isInt({ min: 1 }),
+                    body('firstName', 'firstName is required').optional().trim().not().isEmpty(),
+                    body('lastName', 'lastName is required').optional().trim().not().isEmpty(),
+                    body('age', 'a valid age is required').optional().trim().isInt({ min: 1 }),
+                    body('email', 'a valid email address is required').optional().isEmail()
                 ]
             }
             default: {

@@ -71,32 +71,28 @@ router.post('/add',
 
 // http://localhost:3000/api/users/update
 
-router.put('/update', async (req: Request, res: Response) => {
-    try {
-        const user = req.body;
-        if (!user || !user.id) {
+router.put('/update',
+    userController.validate('updateUser'),
+    async (req: Request, res: Response) => {
+        try {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return res.status(StatusCodes.BAD_REQUEST).json({ errors: errors.array() });
+            }
+            // const user = req.body;
+            // if (!user || !user.id) {
+            //     return res.status(StatusCodes.BAD_REQUEST).json({
+            //         error: paramMissingError,
+            //     });
+            // }
+            await userController.updateUser(req, res);
+            return res.status(StatusCodes.OK).end();
+        } catch (error) {
             return res.status(StatusCodes.BAD_REQUEST).json({
-                error: paramMissingError,
+                error: error.message,
             });
         }
-        await getConnection()
-            .createQueryBuilder()
-            .update(User)
-            .set({
-                firstName: user.firstName,
-                lastName: user.lastName,
-                age: user.age,
-                email: user.email
-            })
-            .where("id = :id", { id: user.id }) // TODO: what if id doesn't exist, should throw error i think?
-            .execute();
-        return res.status(StatusCodes.OK).end();
-    } catch (error) {
-        return res.status(StatusCodes.BAD_REQUEST).json({
-            error: error.message,
-        });
-    }
-});
+    });
 
 
 // http://localhost:3000/api/users/delete/2

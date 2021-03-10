@@ -48,4 +48,18 @@ export class UserService {
             ])
             .execute();
     }
+
+    public async updateUser(user: User): Promise<void> {
+        await getConnection()
+            .createQueryBuilder()
+            .update(User)
+            .set({
+                firstName: user.firstName,
+                lastName: user.lastName,
+                age: user.age,
+                email: user.email
+            })
+            .where("id = :id", { id: user.id })
+            .execute();
+    }
 }
