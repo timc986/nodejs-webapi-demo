@@ -99,13 +99,7 @@ router.put('/update',
 
 router.delete('/delete/:id', async (req: Request, res: Response) => {
     try {
-        const { id } = req.params as ParamsDictionary;
-        await getConnection()
-            .createQueryBuilder()
-            .delete()
-            .from(User)
-            .where("id = :id", { id: id }) // TODO: what if id doesn't exist, should throw error i think?
-            .execute();
+        await userController.deleteUser(req, res);
         return res.status(StatusCodes.OK).end();
     } catch (error) {
         return res.status(StatusCodes.BAD_REQUEST).json({

@@ -66,4 +66,13 @@ export class UserService {
             .where("id = :id", { id: user.id })
             .execute();
     }
+
+    public async deleteUser(id: string): Promise<void> {
+        await getConnection()
+            .createQueryBuilder()
+            .delete()
+            .from(User)
+            .where("id = :id", { id: id })
+            .execute();
+    }
 }

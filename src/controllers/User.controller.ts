@@ -56,6 +56,16 @@ export class UserController {
         await this.userService.updateUser(existingUser, existingUserRoleId);
     }
 
+    public async deleteUser(req: Request, res: Response): Promise<void> {
+        const { id } = req.params as ParamsDictionary;
+        const existingUser = await this.userService.getUser(id);
+        if (!existingUser) {
+            throw new Error('user not found');
+        }
+
+        await this.userService.deleteUser(id);
+    }
+
     public validate(method: string): ValidationChain[] {
         switch (method) {
             case 'addUser': {
