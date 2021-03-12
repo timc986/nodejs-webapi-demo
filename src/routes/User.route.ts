@@ -1,10 +1,6 @@
 import { UserController } from '../controllers/User.controller';
 import { Request, Response, Router } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { ParamsDictionary } from 'express-serve-static-core';
-import { getConnection } from "typeorm";
-import { User } from "../entities/User";
-import { paramMissingError } from '../shared/Constants';
 import { validationResult } from 'express-validator';
 
 const router = Router();

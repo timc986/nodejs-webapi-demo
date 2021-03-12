@@ -1,22 +1,17 @@
+import { OrderController } from './../controllers/Order.controller';
 import { Request, Response, Router } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { ParamsDictionary } from 'express-serve-static-core';
-import { getConnection } from "typeorm";
-import { Order } from "../entities/Order";
-import { paramMissingError } from '../shared/Constants';
-import { User } from '../entities/User';
+import { validationResult } from 'express-validator';
 
 const router = Router();
+
+const orderController: OrderController = new OrderController;
 
 // http://localhost:3000/api/orders/all
 
 router.get('/all', async (req: Request, res: Response) => {
     try {
-        const orders = await getConnection()
-            .getRepository(Order)
-            .createQueryBuilder("order")
-            .innerJoinAndSelect("order.createdByUser", "createdByUser")
-            .getMany();
+        const orders = await orderController.getAllOrders();
         if (orders.length < 1) {
             res.status(404);
             res.end();
@@ -34,14 +29,7 @@ router.get('/all', async (req: Request, res: Response) => {
 
 router.get('/:id', async (req: Request, res: Response) => {
     try {
-        const { id } = req.params as ParamsDictionary;
-        const order = await getConnection()
-            .createQueryBuilder()
-            .select("order")
-            .from(Order, "order")
-            .innerJoinAndSelect("order.createdByUser", "createdByUser")
-            .where("order.id = :id", { id: id })
-            .getOne();
+        const order = await orderController.getOrder(req, res);
         if (!order) {
             res.status(404);
             res.end();
@@ -58,79 +46,51 @@ router.get('/:id', async (req: Request, res: Response) => {
 
 // http://localhost:3000/api/orders/add
 
-router.post('/add', async (req: Request, res: Response) => {
-    try {
-        const order = req.body; // TODO: request validation
-        if (!order || !order.orderCode || !order.name) {
+router.post('/add',
+    orderController.validate('addOrder'),
+    async (req: Request, res: Response) => {
+        try {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return res.status(StatusCodes.BAD_REQUEST).json({ errors: errors.array() });
+            }
+
+            await orderController.addOrder(req, res);
+            return res.status(StatusCodes.CREATED).end();
+        } catch (error) {
             return res.status(StatusCodes.BAD_REQUEST).json({
-                error: paramMissingError,
+                error: error.message,
             });
         }
-
-        const newUser = new User();
-        newUser.id = 1;
-
-        await getConnection()
-            .createQueryBuilder()
-            .insert()
-            .into(Order)
-            .values([
-                {
-                    orderCode: order.orderCode,
-                    name: order.name,
-                    createdByUser: newUser,
-                    createdOn: new Date().toUTCString()
-                }
-            ])
-            .execute();
-        return res.status(StatusCodes.CREATED).end();
-    } catch (error) {
-        return res.status(StatusCodes.BAD_REQUEST).json({
-            error: error.message,
-        });
-    }
-});
+    });
 
 
 // http://localhost:3000/api/orders/update
 
-router.put('/update', async (req: Request, res: Response) => {
-    try {
-        const order = req.body;
-        if (!order || !order.id) {
+router.put('/update',
+    orderController.validate('updateOrder'),
+    async (req: Request, res: Response) => {
+        try {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return res.status(StatusCodes.BAD_REQUEST).json({ errors: errors.array() });
+            }
+
+            await orderController.updateOrder(req, res);
+            return res.status(StatusCodes.OK).end();
+        } catch (error) {
             return res.status(StatusCodes.BAD_REQUEST).json({
-                error: paramMissingError,
+                error: error.message,
             });
         }
-        await getConnection()
-            .createQueryBuilder()
-            .update(Order)
-            .set({
-                orderCode: order.orderCode,
-                name: order.name
-            })
-            .where("id = :id", { id: order.id }) // TODO: what if id doesn't exist, should throw error i think?
-            .execute();
-        return res.status(StatusCodes.OK).end();
-    } catch (error) {
-        return res.status(StatusCodes.BAD_REQUEST).json({
-            error: error.message,
-        });
-    }
-});
+    });
 
 
 // http://localhost:3000/api/orders/delete/2
 
 router.delete('/delete/:id', async (req: Request, res: Response) => {
     try {
-        const { id } = req.params as ParamsDictionary;
-        await getConnection()
-            .createQueryBuilder()
-            .delete()
-            .from(Order)
-            .where("id = :id", { id: id }) // TODO: what if id doesn't exist, should throw error i think?
-            .execute();
+        await orderController.deleteOrder(req, res);
         return res.status(StatusCodes.OK).end();
     } catch (error) {
         return res.status(StatusCodes.BAD_REQUEST).json({
