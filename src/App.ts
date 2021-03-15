@@ -22,7 +22,7 @@ if (process.env.NODE_ENV === 'development') {
 
 app.use('/api', BaseRouter);
 
-// app.get('/', (req, res) => res.send('Hello World!')); // test only, replace above app.use('/api', BaseRouter);
+// app.get('/', (req, res) => res.send('Hello World!')); // initial test only, replace above app.use('/api', BaseRouter);
 
 /// Print API errors
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

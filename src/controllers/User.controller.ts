@@ -3,6 +3,7 @@ import { UserService } from '../services/User.service';
 import { Request, Response } from 'express';
 import { ParamsDictionary } from 'express-serve-static-core';
 import { body, ValidationChain } from 'express-validator';
+
 export class UserController {
 
     // business logic
@@ -21,7 +22,7 @@ export class UserController {
     }
 
     public async addUser(req: Request, res: Response): Promise<void> {
-        const user = req.body;
+        const user = req.body; //TODO: can use dto if neccessary
         let userRoleId = 1; // set default value
         if (user.userRoleId) {
             userRoleId = user.userRoleId;
